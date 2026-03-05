@@ -18,15 +18,15 @@ We benchmark **3 algorithms** across **4 benchmarks**:
 |-----------|--------|-------------|
 | **HotpotQA** | Multi-hop question answering (prompt optimization) | [`hotpotqa`](https://github.com/xuanfeiren/hotpotqa) |
 | **τ-bench** | Tool-agent-user interaction (agent optimization) | [`tau-bench`](https://github.com/xuanfeiren/tau-bench) |
-| **VeriBench** | Formal verification with Lean (code generation) | [`Trace-Bench/Veribench`](https://github.com/xuanfeiren/Trace-Bench) |
-| **KernelBench** | CUDA kernel optimization (code generation) | [`Trace-Bench/KernelBench`](https://github.com/xuanfeiren/Trace-Bench) |
+| **VeriBench** | Formal verification with Lean (code generation) | [`Trace-Bench/Veribench`](https://github.com/xuanfeiren/Trace-Bench/Veribench) |
+| **KernelBench** | CUDA kernel optimization (code generation) | [`Trace-Bench/KernelBench`](https://github.com/xuanfeiren/Trace-Bench/KernelBench) |
 
 ## Experiment Matrix
 
 |              | POLCA | GEPA | OpenEvolve |
 |:-------------|:-----:|:----:|:----------:|
-| **HotpotQA**    | ✅ | ✅ | ✅ |
 | **τ-bench**     | ✅ | ✅ | ✅ |
+| **HotpotQA**    | ✅ | ✅ | ✅ |
 | **VeriBench**   | ✅ | ✅ | ✅ |
 | **KernelBench** | ✅ | ✅ | ✅ |
 
@@ -94,14 +94,14 @@ Each benchmark has its own environment and dependencies. Refer to the individual
 - **VeriBench**: `cd Trace-Bench/Veribench && cat README.md`
 - **KernelBench**: `cd Trace-Bench/KernelBench && cat README.md`
 
-## Citation
+<!-- ## Citation
 
 ```bibtex
 @article{polca2025,
   title={POLCA: Stochastic Generative Optimization with LLM},
   author={},
   year={2025}
-}
+} -->
 ```
 
 ## License
