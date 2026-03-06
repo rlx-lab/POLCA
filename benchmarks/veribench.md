@@ -42,7 +42,7 @@ VeriBench uses a **LiteLLM proxy** for LLM access. Set these before running:
 # LiteLLM API Configuration
 
 
-
+export MODEL="claude-3.7-sonnet"
 # Anthropic-compatible endpoint (used by some scripts)
 export ANTHROPIC_API_BASE="your-api-base-url"
 export ANTHROPIC_API_KEY="your-anthropic-api-key"
@@ -52,6 +52,7 @@ export TRACE_LITELLM_MODEL="model-name"
 
 # Or if you use a custom LLM
 export TRACE_CUSTOMLLM_URL="custom-url"
+export TRACE_CUSTOMLLM_API_KEY="custom-api-key"
 export TRACE_DEFAULT_LLM_BACKEND="CustomLLM"
 export TRACE_CUSTOMLLM_MODEL="claude-3.7-sonnet"
 
@@ -63,13 +64,7 @@ export WANDB_API_KEY="your-wandb-api-key"
 
 ## 2. Running Algorithms
 
-All commands should be run from the **`Trace-Bench/Veribench/`** directory. Run all 3 algorithms at once:
-
-```bash
-bash my_processing_agents/scripts_with_LLM_judge.sh
-```
-
-Or run each algorithm individually:
+All commands should be run from the **`Trace-Bench/Veribench/`** directory. Run each algorithm individually:
 
 ### 2.1 POLCA
 
@@ -109,18 +104,5 @@ uv run python my_processing_agents/solution_openevolve_with_LLMjudge.py \
     --save_results
 ```
 
-### Run all easy-set tasks (10–50)
-
-```bash
-for task_idx in $(seq 10 50); do
-    # Replace the command below with any of the 3 algorithms above
-    uv run python my_processing_agents/solution_PS_withLLMjudge.py \
-        --task_idx $task_idx \
-        --num_steps 20 --num_threads 30 --log_frequency 1 --test_frequency 1 \
-        --num_candidates 5 --algorithm PS_epsNet_Summarizer \
-        --epsilon 0.02 --epsilon_for_summarizer 0.02 \
-        --with_llm_judge --use_wandb --project_name "Veribench-POLCA"
-done
-```
 
 ---
