@@ -37,6 +37,7 @@ declare -A REPOS=(
 clone_or_update() {
     local name="$1"
     local url="$2"
+    local branch="${3:-}"
 
     if [ -d "$name" ]; then
         echo "  ✓ $name — already cloned, pulling latest..."
@@ -44,7 +45,22 @@ clone_or_update() {
     else
         echo "  ⏳ Cloning $name..."
         git clone "$url" "$name"
+        if [ -n "$branch" ]; then
+            (cd "$name" && git checkout "$branch")
+        fi
         echo "  ✓ $name — cloned successfully"
+    fi
+
+    # If a specific branch is required, verify and switch if needed
+    if [ -n "$branch" ] && [ -d "$name" ]; then
+        current_branch=$(cd "$name" && git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+        if [ "$current_branch" != "$branch" ]; then
+            echo "    ⚠ $name is on branch '$current_branch', switching to '$branch'..."
+            (cd "$name" && git fetch origin && git checkout "$branch")
+            echo "    ✓ $name now on branch '$branch'"
+        else
+            echo "    ✓ $name is on correct branch '$branch'"
+        fi
     fi
 }
 
@@ -52,7 +68,8 @@ echo "📦 Cloning / updating repositories..."
 echo ""
 
 echo "── Algorithm Repos ──────────────────────────────────────────"
-for repo in Trace gepa-repo dspy-repo openevolve; do
+clone_or_update "Trace" "${REPOS[Trace]}" "experimental"
+for repo in gepa-repo dspy-repo openevolve; do
     clone_or_update "$repo" "${REPOS[$repo]}"
 done
 
@@ -67,7 +84,5 @@ echo "════════════════════════�
 echo "✅ All repositories ready!"
 echo ""
 echo "Next steps:"
-echo "  1. See README.md for the full algorithm × benchmark matrix"
-echo "  2. Run:  python run.py --list           to see all experiments"
-echo "  3. Run:  python run.py <bench> <algo>    to run an experiment"
+echo "  See README.md for the full algorithm × benchmark matrix"
 echo "════════════════════════════════════════════════════════════════"
