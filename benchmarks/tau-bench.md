@@ -6,70 +6,128 @@
 
 ---
 
-## 1. Installation
+## 1. Installation (uv — recommended)
 
-### 1.1 Clone the repo (already done if using `setup.sh`)
+The fastest way to set up τ-bench with all algorithm dependencies:
 
 ```bash
-# From POLCA root
 cd tau-bench
+bash install.sh
 ```
 
-### 1.2 Install τ-bench
+This single command will:
+1. Install [uv](https://docs.astral.sh/uv/) if not already present
+2. Clone algorithm repos into `tau-bench/` as editable sources:
+   - `Trace` (branch `experimental`) — for POLCA
+   - `dspy-repo` — for GEPA
+   - `gepa-repo` — for GEPA
+   - `openevolve` — for OpenEvolve
+3. Run `uv sync` to create a `.venv` and install all dependencies
+4. Verify all imports
+
+After installation, activate the environment:
 
 ```bash
-pip install -e .
+source .venv/bin/activate
+# or use uv run:
+uv run python my_processing_agents/optimize_tau_agent.py --help
 ```
 
-### 1.3 Install algorithm dependencies
-
-τ-bench optimization scripts depend on **Trace** (for POLCA) and **DSPy + GEPA** (for GEPA). These must be installed from the sibling repos:
+To uninstall (remove `.venv` and build artifacts):
 
 ```bash
-# Install Trace (required for POLCA)
-cd ../Trace
-pip install -e .
-cd ../tau-bench
-
-# Install DSPy (required for GEPA)
-cd ../dspy-repo
-pip install -e .
-cd ../tau-bench
-
-# Install OpenEvolve (required for OpenEvolve)
-cd ../openevolve
-pip install -e .
-cd ../tau-bench
+bash uninstall.sh
 ```
 
-### 1.4 Set environment variables
+### Environment variables
 
-Create a `.env` file or export these variables:
+Before running any experiments, set your API keys:
 
 ```bash
-# Required: point Trace to the correct LLM
-export PYTHONPATH=/path/to/POLCA/Trace
-export TRACE_LITELLM_MODEL=gemini/gemini-2.0-flash
-
-# Required: API keys (at least one)
-export GEMINI_API_KEY="your-key"
-# or
-export OPENAI_API_KEY="your-key"
+export GEMINI_API_KEY="your-gemini-api-key"
+export WANDB_API_KEY="your-wandb-api-key"
 ```
 
 ---
 
-## 2. Running Algorithms
+## 2. Installation (manual — alternative)
+
+<details>
+<summary>Click to expand manual setup steps</summary>
+
+If you prefer not to use `uv`, you can set up manually with conda + pip:
+
+### 2.1 Create conda environment
+
+```bash
+conda create -n tau python=3.13 -c conda-forge -y
+conda activate tau
+```
+
+### 2.2 Install τ-bench
+
+```bash
+git clone https://github.com/xuanfeiren/tau-bench.git
+cd ./tau-bench
+pip install -e .
+```
+
+### 2.3 Clone and install Trace (required for POLCA)
+
+```bash
+git clone https://github.com/xuanfeiren/Trace.git
+cd ./Trace
+git checkout experimental
+pip install -e .
+cd ..
+```
+
+> **Note**: The `experimental` branch contains the PrioritySearch features needed for τ-bench optimization.
+
+### 2.4 Clone and install DSPy + GEPA (required for GEPA)
+
+```bash
+git clone https://github.com/xuanfeiren/dspy-repo.git
+cd ./dspy-repo
+pip install -e .
+cd ..
+
+git clone https://github.com/xuanfeiren/gepa-repo.git
+cd ./gepa-repo
+pip install -e .
+cd ..
+```
+
+### 2.5 Clone and install OpenEvolve (required for OpenEvolve)
+
+```bash
+git clone https://github.com/xuanfeiren/openevolve.git
+cd ./openevolve
+pip install -e .
+cd ..
+```
+
+### 2.6 Install remaining pip dependencies
+
+```bash
+pip install wandb datasets pandas scikit-learn scipy seaborn matplotlib graphviz pyyaml python-dotenv torch
+```
+
+</details>
+
+---
+
+## 3. Running Algorithms
 
 All optimization scripts are in `my_processing_agents/`. Every script should be run from the **`tau-bench/`** directory.
 
-### 2.1 POLCA (PrioritySearch)
+### 3.1 POLCA (PrioritySearch)
 
 **Script**: `my_processing_agents/optimize_tau_agent.py`
 
 **What it optimizes**: Agent tool descriptions and additional instructions using PrioritySearch with Trace.
 
-#### Quick start (debug run)
+#### Debug run
 
 ```bash
 python my_processing_agents/optimize_tau_agent.py \
@@ -81,28 +139,33 @@ python my_processing_agents/optimize_tau_agent.py \
     --num_steps 5 \
     --num_threads 20 \
     --num_candidates 2 \
-    --score_function mean 
+    --score_function mean
 ```
 
 #### Full run (paper configuration)
 
 ```bash
 python my_processing_agents/optimize_tau_agent.py \
-    --num_train_samples 50 \
-    --num_validate_samples 50 \
-    --num_test_samples 50 \
+    --num_train_samples 115 \
+    --num_validate_samples 115 \
+    --num_test_samples 115 \
+    --num_candidates 5 \
     --batch_size 2 \
     --num_batches 1 \
-    --num_steps 100 \
+    --num_steps 101 \
     --num_threads 20 \
-    --num_candidates 5 \
+    --memory_update_frequency 0 \
     --num_eval_samples 1 \
-    --score_function mean \
+    --test_frequency 10 \
     --log_frequency 1 \
+    --num_proposals 1 \
     --epsilon 0.1 \
+    --project_name tau-bench-115-tasks \
+    --run_name eps0.1_summarizer-pass@1 \
+    --optoprime_version v2 \
+    --ablation \
     --epsnetPS \
-    --use_summarizer \
-    --model gemini-2.0-flash 
+    --use_summarizer
 ```
 
 #### Key parameters
@@ -120,22 +183,24 @@ python my_processing_agents/optimize_tau_agent.py \
 | `--epsilon` | Epsilon for EpsilonNet PrioritySearch | 0.0 |
 | `--epsnetPS` | Enable EpsilonNet mode | `False` |
 | `--use_summarizer` | Enable trajectory summarizer | `False` |
+| `--ablation` | Enable ablation mode (required for `--epsnetPS`) | `False` |
+| `--optoprime_version` | Optimizer version (`v1` or `v2`) | `v2` |
 | `--model` | LLM model for the agent | `gemini-2.0-flash` |
 | `--user_model` | LLM model for user simulator | `gemini-2.0-flash` |
-| `--use_regressor` | Enable score regression | `False` |
-| `--use_generator` | Enable LLM candidate generator | `False` |
-| `--run_name` | WandB run name | `debug` |
+| `--memory_update_frequency` | Short-term memory duration (0 = disabled) | 2 |
+| `--test_frequency` | How often to run test evaluation | `None` |
 | `--project_name` | WandB project name | `tau-bench-priority-search` |
+| `--run_name` | WandB run name | `debug` |
 
 ---
 
-### 2.2 GEPA
+### 3.2 GEPA
 
 **Script**: `my_processing_agents/dspy_opt.py`
 
 **What it optimizes**: Agent instructions using GEPA (Genetic Evolution for Prompt Adaptation) from DSPy.
 
-#### Quick start (debug run)
+#### Debug run
 
 ```bash
 python my_processing_agents/dspy_opt.py \
@@ -179,13 +244,13 @@ python my_processing_agents/dspy_opt.py \
 
 ---
 
-### 2.3 OpenEvolve
+### 3.3 OpenEvolve
 
 **Script**: `my_processing_agents/openevolve_tau_opt_with_feedback.py`
 
 **What it optimizes**: Agent instructions using evolutionary optimization with rich per-task feedback.
 
-#### Quick start (debug run)
+#### Debug run
 
 ```bash
 python my_processing_agents/openevolve_tau_opt_with_feedback.py \
@@ -232,7 +297,7 @@ python my_processing_agents/openevolve_tau_opt_with_feedback.py \
 
 ---
 
-## 3. Task Domain
+## 4. Task Domain
 
 All experiments run on the **Retail** domain (115 customer service tasks). The agent is a **tool-calling agent** that interacts with a simulated user and a set of retail tools (order lookup, returns, exchanges, etc.).
 
@@ -242,7 +307,7 @@ The optimization **does not change the agent's code** — it only modifies:
 
 ---
 
-## 4. Results & Logging
+## 5. Results & Logging
 
 - All algorithms log to **WandB** by default. Set `--use_wandb` / `--project` / `--run_name` to configure.
 - POLCA results are saved via WandB logger and optionally to `--save_path`.
@@ -251,12 +316,11 @@ The optimization **does not change the agent's code** — it only modifies:
 
 ---
 
-## 5. Evaluation
+## 6. Evaluation
 
 To evaluate a saved agent against the full task set:
 
 ```bash
-# Evaluate using the evaluate_custom_agents script
 python my_processing_agents/evaluate_custom_agents.py
 ```
 
