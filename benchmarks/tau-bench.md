@@ -192,7 +192,6 @@ uv run python my_processing_agents/openevolve_tau_opt_with_feedback.py \
 All experiments run on the **Retail** domain (115 customer service tasks). The agent is a **tool-calling agent** that interacts with a simulated user and a set of retail tools (order lookup, returns, exchanges, etc.).
 
 The optimization **does not change the agent's code** — it only modifies:
-1. **Tool descriptions** — clarifying how tools should be used
-2. **Additional instructions** — strategic guidance and best practices
+1. **Additional instructions** — strategic guidance and best practices
 
 ---
