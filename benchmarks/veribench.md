@@ -47,6 +47,8 @@ export MODEL="claude-3.7-sonnet"
 export ANTHROPIC_API_BASE="your-api-base-url"
 export ANTHROPIC_API_KEY="your-anthropic-api-key"
 
+export GEMINI_API_KEY="your-gemini-api-key"
+
 # LiteLLM Model Configuration (we use claude-3.7-sonnet)
 export TRACE_LITELLM_MODEL="model-name"
 
