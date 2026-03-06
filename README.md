@@ -16,8 +16,8 @@ We benchmark **3 algorithms** across **4 benchmarks**:
 
 | Benchmark | Domain | Source Repo |
 |-----------|--------|-------------|
-| **HotpotQA** | Multi-hop question answering (prompt optimization) | [`hotpotqa`](https://github.com/xuanfeiren/hotpotqa) |
 | **τ-bench** | Tool-agent-user interaction (agent optimization) | [`tau-bench`](https://github.com/xuanfeiren/tau-bench) |
+| **HotpotQA** | Multi-hop question answering (prompt optimization) | [`hotpotqa`](https://github.com/xuanfeiren/hotpotqa) |
 | **VeriBench** | Formal verification with Lean (code generation) | [`Trace-Bench/Veribench`](https://github.com/xuanfeiren/Trace-Bench/tree/main/Veribench) |
 | **KernelBench** | CUDA kernel optimization (code generation) | [`Trace-Bench/KernelBench`](https://github.com/xuanfeiren/Trace-Bench/tree/main/KernelBench) |
 
@@ -37,7 +37,6 @@ We benchmark **3 algorithms** across **4 benchmarks**:
 ```bash
 git clone https://github.com/rlx-lab/POLCA.git
 cd POLCA
-bash setup.sh
 ```
 
 This clones all algorithm and benchmark repos into the current directory.
@@ -71,6 +70,11 @@ POLCA/                          ← you are here
 ├── README.md                   ← this file
 ├── setup.sh                    ← clones all dependency repos
 ├── run.py                      ← master CLI entry point
+├── benchmarks/                 ← per-benchmark setup guides
+│   ├── tau-bench.md
+│   ├── hotpotqa.md
+│   ├── veribench.md
+│   └── kernelbench.md
 │
 ├── Trace/                      ← POLCA algorithm (Trace framework)
 ├── gepa-repo/                  ← GEPA algorithm
@@ -80,6 +84,7 @@ POLCA/                          ← you are here
 ├── hotpotqa/                   ← HotpotQA benchmark
 │   └── prompt_opt/             ← optimization scripts for all 3 algorithms
 ├── tau-bench/                  ← τ-bench benchmark
+│   └── my_processing_agents/   ← optimization scripts for all 3 algorithms
 └── Trace-Bench/                ← Trace-Bench (contains VeriBench & KernelBench)
     ├── Veribench/
     └── KernelBench/
@@ -87,12 +92,12 @@ POLCA/                          ← you are here
 
 ## Per-Benchmark Setup
 
-Each benchmark has its own environment and dependencies. Refer to the individual READMEs for detailed setup:
+Each benchmark has detailed setup instructions covering installation, environment variables, and how to run all 3 algorithms:
 
-- **HotpotQA**: `cd hotpotqa && cat README.md`
-- **τ-bench**: `cd tau-bench && cat README.md`
-- **VeriBench**: `cd Trace-Bench/Veribench && cat README.md`
-- **KernelBench**: `cd Trace-Bench/KernelBench && cat README.md`
+- **[τ-bench](benchmarks/tau-bench.md)** — Agent optimization on retail customer service tasks
+- **[HotpotQA](benchmarks/hotpotqa.md)** — Prompt optimization for multi-hop QA
+- **[VeriBench](benchmarks/veribench.md)** — Lean formal verification code generation
+- **[KernelBench](benchmarks/kernelbench.md)** — CUDA kernel optimization
 
 <!-- ## Citation
 
