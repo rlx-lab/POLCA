@@ -39,28 +39,23 @@ git clone https://github.com/rlx-lab/POLCA.git
 cd POLCA
 ```
 
-This clones all algorithm and benchmark repos into the current directory.
-
-### 2. List available experiments
+### 2. Clone all dependency repos
 
 ```bash
-python run.py --list
+bash setup.sh
 ```
 
-### 3. Run an experiment
+### 3. Set up and run a benchmark
+
+Each benchmark has its own `install.sh` and run scripts. See the [Per-Benchmark Setup](#per-benchmark-setup) section below.
 
 ```bash
-# Run POLCA on HotpotQA (run #1)
-python run.py hotpotqa polca --run-num 1
-
-# Run GEPA on HotpotQA (run #2)
-python run.py hotpotqa gepa --run-num 2
-
-# Run OpenEvolve on HotpotQA
-python run.py hotpotqa openevolve
-
-# Dry run (print command without executing)
-python run.py tau-bench polca --dry-run
+# Example: HotpotQA
+cd hotpotqa
+bash install.sh
+bash prompt_opt/run_trace.sh      # POLCA
+bash prompt_opt/run_gepa.sh       # GEPA
+bash prompt_opt/run_openevolve.sh # OpenEvolve
 ```
 
 ## Repository Structure
@@ -69,7 +64,7 @@ python run.py tau-bench polca --dry-run
 POLCA/                          ← you are here
 ├── README.md                   ← this file
 ├── setup.sh                    ← clones all dependency repos
-├── run.py                      ← master CLI entry point
+
 ├── benchmarks/                 ← per-benchmark setup guides
 │   ├── tau-bench.md
 │   ├── hotpotqa.md
