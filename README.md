@@ -104,6 +104,3 @@ Each benchmark has detailed setup instructions covering installation, environmen
 } -->
 ```
 
-## License
-
-See individual repository licenses.
