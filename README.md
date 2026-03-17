@@ -1,6 +1,6 @@
 # POLCA: Stochastic Generative Optimization with LLM
 
-This repository serves as the **central entry point** for reproducing the experimental results in the paper *POLCA: Stochastic Generative Optimization with LLM*.
+This repository serves as the **central entry point** for reproducing the experimental results in the paper [*POLCA: Stochastic Generative Optimization with LLM*](https://arxiv.org/abs/2603.14769).
 
 We benchmark **3 algorithms** across **4 benchmarks**:
 
